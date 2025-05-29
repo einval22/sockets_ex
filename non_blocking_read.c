@@ -30,13 +30,16 @@ int main(int argc, char **argv) {
 	//const char *greeting = "Hello, hello !";
 	socklen_t addr_len = sizeof(address);
 
-	// blocking socket
+	// non-blocking socket
 	server_fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC | SOCK_NONBLOCK, 0);
 	if (server_fd < 0) {
 		fprintf(stderr, "Failed to open server socket: %s (%d)\n", strerror(errno), errno);
 		return -errno;
 	}
 
+	/* SO_REUSEADDR bind on TW sockets and multiple IPs - same port (multi-homing),
+	 * SO_REUSEPORT bind N listening sockets (balancing especially for UDP) + bind on already bound socket, zero down-time
+	 */
 	if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) < -1) {
 		fprintf(stderr, "Failed to set SO_REUSEADDR and SO_REUSEPORT on fd #%d: %s (%d)\n", server_fd, strerror(errno), errno);
 		return -errno;
@@ -110,7 +113,7 @@ int main(int argc, char **argv) {
 
 			close(conn_sock_fd);
 		}
-		usleep(100000);
+		usleep(100000); // busy-wait
 	}
 
 	
