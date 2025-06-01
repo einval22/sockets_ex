@@ -86,7 +86,10 @@ int main() {
 		FD_SET(listener_fd, &read_fds);
 		max_fd = listener_fd;
 
-		// add connection socks
+		/* add connection socks to read_fds set again, when select()
+		 * returns read_fds is already modified and contains only sockets
+		 * with data to read.
+		 */
 		for (i = 0; i < MAX_CLIENTS; i++) {
 			conn_fd = client_sockets[i];
 			if (conn_fd > 0) {
