@@ -9,7 +9,7 @@
 #include <fcntl.h>
 #include <errno.h>
 
-#define MAX_EVENTS 1024     // Максимальное количество событий, обрабатываемых за один вызов epoll_wait
+#define MAX_EVENTS 1024
 #define LISTEN_PORT 8080
 #define BUFFER_SIZE 1024
 
