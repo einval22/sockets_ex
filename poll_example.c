@@ -12,7 +12,7 @@
 int main() {
 	int pipe_fds[NUM_PIPES][2]; // [0] - for read, [1] - for write
 	struct pollfd poll_fds[NUM_PIPES];
-	char buffer[256];
+	char buffer[256] = {0};
 	int i, j;
 	ssize_t read_bytes;
 

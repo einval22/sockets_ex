@@ -35,11 +35,11 @@ void set_sock_non_blocking(int fd) {
 
 int main() {
 	int listener_fd, conn_sock_fd, conn_fd;
-	int client_sockets[MAX_CLIENTS] = {-1}; // init all clients sockets
+	int client_sockets[MAX_CLIENTS];
 	int max_fd, activity, i, read_bytes;
-	struct sockaddr_in address;
+	struct sockaddr_in address = {0};
 	socklen_t addrlen = sizeof(address);
-	char buffer[BUFFER_SIZE];
+	char buffer[BUFFER_SIZE] = {0};
 	int opt = 1;
 
 	memset(client_sockets, -1, sizeof(int)*MAX_CLIENTS);
@@ -53,6 +53,7 @@ int main() {
 
 	if (setsockopt(listener_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)) < 0) {
 		perror("setsockopt");
+		close(listener_fd);
 		exit(EXIT_FAILURE);
 	}
 
@@ -64,7 +65,6 @@ int main() {
 		perror("bind failed");
 		exit(EXIT_FAILURE);
 	}
-	
 
 	if (listen(listener_fd, 3) < 0) {
 		perror("listen");
